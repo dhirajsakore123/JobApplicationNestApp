@@ -35,7 +35,13 @@ export class JobsService {
     return job;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} job`;
+  async remove(id: string): Promise<{ message: string }> {
+    const job = await this.jobModel.findById(id);
+    if (!job) {
+      throw new NotFoundException(`Job with id ${id} not found`);
+    }
+
+    await this.jobModel.findByIdAndDelete(id);
+    return { message: `Job with id ${id} has been deleted` };
   }
 }
